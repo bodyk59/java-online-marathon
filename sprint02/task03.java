@@ -29,12 +29,7 @@ class Solution {
             dividend -= divisor;
             quotient++;
         }
-
-        //If sign was "-" return to it
-        if (sign == -1) {
-            quotient = -quotient;
-        }        
-
-        return quotient;
+        
+        return (sign == -1) ? -quotient : quotient;
     }
 }
