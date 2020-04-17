@@ -34,7 +34,7 @@ class Person {
 
     @Override
     public String toString() {
-        return "Person [name=" + name + "]";
+        return "Person [name=" + getName() + "]";
     }
 
     @Override
@@ -42,16 +42,16 @@ class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(name, person.name);
+        return Objects.equals(getName(), person.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return name != null ? getName().hashCode() : 0;
     }
 }
 
-class Student extends Person implements Comparable<Student> {
+class Student extends Person {
     private String studyPlace;
     private int studyYears;
 
@@ -70,15 +70,10 @@ class Student extends Person implements Comparable<Student> {
     }
 
     @Override
-    public int compareTo(Student student) {
-        return Integer.compare(this.studyYears, student.studyYears);
-    }
-
-    @Override
     public String toString() {
         return "Student [name=" + super.getName()
-                + ", studyPlace=" + studyPlace
-                + ", studyYears=" + studyYears + "]";
+                + ", studyPlace=" + getStudyPlace()
+                + ", studyYears=" + getStudyYears() + "]";
     }
 
     @Override
@@ -87,17 +82,20 @@ class Student extends Person implements Comparable<Student> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Student student = (Student) o;
-        return studyYears == student.studyYears &&
-                Objects.equals(studyPlace, student.studyPlace);
+        if (getStudyYears() != student.getStudyYears()) return false;
+        return Objects.equals(getStudyPlace(), student.getStudyPlace());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), studyPlace, studyYears);
+        int result = super.hashCode();
+        result = 31 * result + (getStudyPlace() != null ? getStudyPlace().hashCode() : 0);
+        result = 31 * result + getStudyYears();
+        return result;
     }
 }
 
-class Worker extends Person implements Comparable<Worker> {
+class Worker extends Person {
     private String workPosition;
     private int experienceYears;
 
@@ -116,15 +114,10 @@ class Worker extends Person implements Comparable<Worker> {
     }
 
     @Override
-    public int compareTo(Worker worker) {
-        return Integer.compare(this.experienceYears, worker.experienceYears);
-    }
-
-    @Override
     public String toString() {
         return "Worker [name=" + super.getName()
-                + ", workPosition=" + workPosition
-                + ", experienceYears=" + experienceYears + "]";
+                + ", workPosition=" + getWorkPosition()
+                + ", experienceYears=" + getExperienceYears() + "]";
     }
 
     @Override
@@ -133,13 +126,16 @@ class Worker extends Person implements Comparable<Worker> {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Worker worker = (Worker) o;
-        return experienceYears == worker.experienceYears &&
-                Objects.equals(workPosition, worker.workPosition);
+        if (getExperienceYears() != worker.getExperienceYears()) return false;
+        return Objects.equals(getWorkPosition(), worker.getWorkPosition());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), workPosition, experienceYears);
+        int result = super.hashCode();
+        result = 31 * result + (getWorkPosition() != null ? getWorkPosition().hashCode() : 0);
+        result = 31 * result + getExperienceYears();
+        return result;
     }
 }
 
@@ -149,26 +145,45 @@ public class MyUtils {
         List<Student> student = new ArrayList<>();
 
         for (Person person : personList) {
-            if (person instanceof Student && !student.contains(person)) {
+            if (person instanceof Student) {
                 student.add((Student) person);
             }
 
-            if (person instanceof Worker && !worker.contains(person)) {
+            if (person instanceof Worker) {
                 worker.add((Worker) person);
             }
         }
+        worker.sort((worker1, worker2)
+                -> Integer.compare(worker2.getExperienceYears(), worker1.getExperienceYears()));
+        student.sort((student1, student2)
+                -> Integer.compare(student2.getStudyYears(), student1.getStudyYears()));
+
+        List<Person> result = new ArrayList<>();
 
         for (int i = 0; i < worker.size(); i++) {
-            worker.remove(Collections.min(worker));
+            if (!result.contains(worker.get(i))) {
+                result.add(worker.get(i));
+            }
+
+            if (i + 1 != worker.size()) {
+                if (worker.get(i).getExperienceYears() != worker.get(i + 1).getExperienceYears()) {
+                    break;
+                } 
+            }
+            
         }
 
         for (int i = 0; i < student.size(); i++) {
-            student.remove(Collections.min(student));
-        }
+            if (!result.contains(student.get(i))) {
+                result.add(student.get(i));
+            }
 
-        List<Person> result = new ArrayList<>();
-        result.addAll(worker);
-        result.addAll(student);
+            if (i + 1 != student.size()) {
+                if (student.get(i).getStudyYears() != student.get(i + 1).getStudyYears()) {
+                    break;
+                }
+            }
+        }
 
         return result;
     }
