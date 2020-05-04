@@ -41,17 +41,19 @@ class Plant {
     private Type type;
 
     public Plant(String type, String color, String name) throws ColorException, TypeException {
-        if (!Arrays.toString(Color.values()).contains(color)) {
+        try {
+            this.color = Color.valueOf(color);
+        } catch (IllegalArgumentException e) {
             throw new ColorException("Illegal color!");
         }
-
-        if (!Arrays.toString(Type.values()).contains(type)) {
+        
+        try {
+            this.type = Type.valueOf(type);
+        } catch (IllegalArgumentException e) {
             throw new TypeException("Illegal type!");
         }
 
         this.name = name;
-        this.color = Color.valueOf(color);
-        this.type = Type.valueOf(type);
     }
 
     @Override
