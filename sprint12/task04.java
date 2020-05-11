@@ -45,16 +45,13 @@ class MyThreads {
                 for(int i = 0; i < 5; i++, n++)
                     System.out.println("Thread1 n = " + n);
             }
-
-            Thread.yield();
-
-            try {
-                t2.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             synchronized (ada) {
+                ada.notify();
+                try {
+                    ada.wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 for(int i = 0; i < 5; i++, m++)
                     System.out.println("Thread1 m = " + m);
                 System.out.println( "Thread1 success!");
@@ -65,14 +62,20 @@ class MyThreads {
     public static Thread t2 = new Thread() {
         public void run() {
             synchronized (ada) {
+                try {
+                    ada.wait(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 for(int i = 0; i < 5; i++, m++)
                     System.out.println("Thread2 m = " + m);
-            }
-            synchronized (den) {
-                for(int i = 0; i < 5; i++, n++)
-                    System.out.println("Thread2 n = " + n);
-                System.out.println("Thread2 success!");
-                Thread.yield();
+
+                synchronized (den) {
+                    for(int i = 0; i < 5; i++, n++)
+                        System.out.println("Thread2 n = " + n);
+                    System.out.println("Thread2 success!");
+                }
+                ada.notify();
             }
         }
     };
