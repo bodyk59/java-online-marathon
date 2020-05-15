@@ -14,13 +14,11 @@ import java.util.stream.Stream;
  * @author Bogdan Kurchak
  */
 public class MyUtils {
-    int m = 0;
-
     public int sumEven(Stream<IntStream> stream) {
-        stream.forEach(i -> m += i.filter(n -> n > 0 && n % 2 == 0)
-                .distinct()
+        return stream.mapToInt(intStream -> intStream.distinct()
+                .filter(n -> n > 0 && n % 2 == 0)
                 .findFirst()
-                .orElse(0));
-        return m;
+                .orElse(0))
+                .sum();
     }
 }
