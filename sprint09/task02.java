@@ -13,7 +13,7 @@ import java.util.ArrayDeque;
  */
 public class MyUtils {
     public boolean verifyBrackets(String text) {
-        text = text.replaceAll("\\\\([{}()\\[\\]])", "");
+        text = text.replaceAll("[^{}()\\[\\]]", "");
         ArrayDeque<Character> stack  = new ArrayDeque<>();
 
         for(int i = 0; i < text.length(); i++) {
