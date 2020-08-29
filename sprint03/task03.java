@@ -12,17 +12,12 @@ import java.util.*;
  */
 public class MyUtils {
     public boolean listMapCompare(List<String> list, Map<String, String> map) {
-        boolean flag = true;
-
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            for (int i = 0; i < list.size(); i++) {
-                if (!list.contains(entry.getValue())) {
-                    flag = false;
-                    break;
-                }
+            if (!list.contains(entry.getValue())) {
+                return false;
             }
         }
 
-        return flag;
+        return true;
     }
 }
