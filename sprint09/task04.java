@@ -1,4 +1,4 @@
-*
+/*
  * Write a String differentWords(String originalText, String modifyText) method
  * of the MyUtils class to compare originalText and modifyText.
  * The differentWords() method return the modified text with uppercase of additional words.
